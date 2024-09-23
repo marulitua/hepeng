@@ -2,11 +2,13 @@ package com.hepeng.note
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -30,11 +32,6 @@ typealias LumaListener = (luma: Double) -> Unit
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
 
-    private var imageCapture: ImageCapture? = null
-    private var videoCapture: VideoCapture<Recorder>? = null
-
-    private lateinit var cameraExecutor: ExecutorService
-
     private val activityResultLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions())
@@ -49,8 +46,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(baseContext,
                     "Permission request denied",
                     Toast.LENGTH_SHORT).show()
-            } else {
-                startCamera()
             }
         }
 
@@ -60,104 +55,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         // Request camera permissions
-        if (allPermissionsGranted()) {
-            startCamera()
-        } else {
+        if (!allPermissionsGranted()) {
             requestPermissions()
         }
 
-        // Set up the listeners for take photo  and video capture buttons
-        viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
-        viewBinding.videoCaptureButton.setOnClickListener { captureVideo() }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
-    }
-
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
-        // Create time stamped name and MediaStore entry
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/hepeng")
-            }
+        val buttonClick = findViewById<Button>(R.id.addButton)
+        buttonClick.setOnClickListener {
+            val intent = Intent(this, CaptureActivity::class.java)
+            startActivity(intent)
         }
 
-        // Create output options object which contains file + metadata
-        val outputOption = ImageCapture.OutputFileOptions
-            .Builder(
-                contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues)
-            .build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOption,
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
-                }
-
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val msg = "Photo capture succeeded: ${outputFileResults.savedUri}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            }
-        )
-    }
-
-    private fun captureVideo() {}
-
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
-        cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
-                }
-
-            imageCapture = ImageCapture.Builder()
-                .build()
-
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                        Log.d(TAG, "Average luminosity: $luma")
-                    })
-                }
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, imageAnalyzer)
-
-            } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
-            }
-
-        }, ContextCompat.getMainExecutor(this))
     }
 
     private fun requestPermissions() {
@@ -172,12 +79,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
     }
 
     companion object {
-        private const val TAG = "hepeng"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        internal const val TAG = "hepeng"
+        internal const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
                 Manifest.permission.CAMERA,
