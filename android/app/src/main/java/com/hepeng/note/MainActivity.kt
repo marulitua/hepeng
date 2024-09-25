@@ -1,32 +1,28 @@
 package com.hepeng.note
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.Recorder
-import androidx.camera.video.VideoCapture
 import androidx.core.content.ContextCompat
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.Update
 import com.hepeng.note.databinding.ActivityMainBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-
 typealias LumaListener = (luma: Double) -> Unit
 
 class MainActivity : AppCompatActivity() {
@@ -59,12 +55,25 @@ class MainActivity : AppCompatActivity() {
             requestPermissions()
         }
 
-        val buttonClick = findViewById<Button>(R.id.addButton)
-        buttonClick.setOnClickListener {
+        val buttonAdd = findViewById<Button>(R.id.addButton)
+        buttonAdd.setOnClickListener {
             val intent = Intent(this, CaptureActivity::class.java)
             startActivity(intent)
         }
 
+        val buttonList = findViewById<Button>(R.id.listButton)
+        buttonList.setOnClickListener {
+            val intent = Intent(this, ListActivity::class.java)
+            startActivity(intent)
+        }
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "database-name"
+        ).build()
+
+        val userDao = db.userDao()
+        //val users: List<User> = userDao.getAll()
     }
 
     private fun requestPermissions() {
@@ -93,5 +102,39 @@ class MainActivity : AppCompatActivity() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+    }
+
+    @Entity
+    data class User(
+        @PrimaryKey val uid: Int,
+        @ColumnInfo(name = "first_name") val firstName: String?,
+        @ColumnInfo(name = "last_name") val lastName: String?,
+        @ColumnInfo(name = "region") val region: String?
+    )
+
+    @Dao
+    interface UserDao {
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        suspend fun insertUsers(vararg users: User)
+
+        @Update
+        suspend fun updateUsers(vararg users: User)
+
+        @Delete
+        suspend fun deleteUsers(vararg users: User)
+
+        @Query("SELECT * FROM user WHERE uid = :id")
+        suspend fun loadUserById(id: Int): User
+
+        @Query("SELECT * from user WHERE region IN (:regions)")
+        suspend fun loadUsersByRegion(regions: List<String>): List<User>
+
+        @Query("SELECT * FROM user")
+        fun getAll(): List<User>
+    }
+
+    @Database(entities = [User::class], version = 1)
+    abstract class AppDatabase : RoomDatabase() {
+        abstract fun userDao(): UserDao
     }
 }

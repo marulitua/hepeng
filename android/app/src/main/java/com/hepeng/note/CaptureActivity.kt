@@ -1,13 +1,11 @@
 package com.hepeng.note
 
-import android.Manifest
 import android.content.ContentValues
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -16,8 +14,6 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.hepeng.note.MainActivity.Companion.FILENAME_FORMAT
 import com.hepeng.note.MainActivity.Companion.TAG
 import com.hepeng.note.databinding.ActivityCaptureBinding
