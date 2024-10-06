@@ -2,6 +2,7 @@ package com.hepeng.note
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.view.CameraController
@@ -17,7 +18,7 @@ object CameraFileUtils {
         context: Context,
         executor: ExecutorService,
         onImageCaptured: (Uri) -> Unit,
-        //onError: (ImageCaptureException)
+        onErrorc: (ImageCaptureException) -> Unit
     ) {
         // Create a file to save the photo
         val photoFile = createPhotoFile(context)
@@ -35,7 +36,8 @@ object CameraFileUtils {
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    onError(exception)
+                    Log.e("HEPENG", "Photo capture failed: ${exception.message}", exception)
+                    onErrorc(exception)
                 }
             }
         )

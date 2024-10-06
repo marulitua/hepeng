@@ -40,7 +40,6 @@ fun CameraPreview() {
         }
     }
 
-
     Box {
 
         // PreviewView for the camera feed. Configured to fill the
@@ -61,14 +60,13 @@ fun CameraPreview() {
             onClick = {
                 Log.d("clicked:", "capture button")
                 // Calls a utility function to take a picture, handling success
-                takePicture(cameraController, context, executor, { uri ->
-                    capturedImageUri.value =
-                        uri // Update state with the URI of the captured image on success
-                }
-                    /*
-                , { exception ->
+                takePicture(
+                    cameraController,
+                    context,
+                    executor,
+                    { uri -> capturedImageUri.value = uri }, // Update state with the URI of the captured image on success
+                    { exception ->  }
                 // Error handling logic for image capture failures
-            }*/
                 )
             },
             modifier = Modifier.align(Alignment.BottomCenter)
