@@ -41,7 +41,6 @@ fun CameraPreview() {
     }
 
     Box {
-
         // PreviewView for the camera feed. Configured to fill the
         AndroidView(
             modifier = Modifier.fillMaxSize(),
@@ -58,7 +57,7 @@ fun CameraPreview() {
         )
         Button(
             onClick = {
-                Log.d("clicked:", "capture button")
+                Log.d(Constants.TAG, "capture button")
                 // Calls a utility function to take a picture, handling success
                 takePicture(
                     cameraController,

@@ -20,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.platform.LocalContext
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +50,10 @@ fun MyContent() {
                     )
                     Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show()
                 }) { Text("Add") }
-                Button(onClick = { Log.d("clicked:", "list button") }) { Text("List") }
+
+                Button(onClick = {
+                    Log.d(Constants.TAG, "list button")
+                }) { Text("List") }
             }
         }
     }

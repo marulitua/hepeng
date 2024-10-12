@@ -36,7 +36,7 @@ object CameraFileUtils {
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    Log.e("HEPENG", "Photo capture failed: ${exception.message}", exception)
+                    Log.e(Constants.TAG, "Photo capture failed: ${exception.message}", exception)
                     onErrorc(exception)
                 }
             }
