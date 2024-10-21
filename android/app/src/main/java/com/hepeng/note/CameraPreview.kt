@@ -7,6 +7,8 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -23,9 +25,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import java.util.concurrent.Executors
 import com.hepeng.note.CameraFileUtils.takePicture
 import coil.compose.rememberAsyncImagePainter
+import com.hepeng.note.data.MainViewModel
 
 @Composable
-fun CameraPreview() {
+fun CameraPreview(mainViewModel: MainViewModel) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     // Executor for background tasks, specifically for taking pictures in this context
@@ -44,6 +47,7 @@ fun CameraPreview() {
         // PreviewView for the camera feed. Configured to fill the
         AndroidView(
             modifier = Modifier.fillMaxSize(),
+//            modifier = Modifier.height(100.dp).fillMaxWidth(),
             factory = { ctx ->
                 PreviewView(ctx).apply {
                     scaleType = PreviewView.ScaleType.FILL_START
@@ -63,7 +67,14 @@ fun CameraPreview() {
                     cameraController,
                     context,
                     executor,
-                    { uri -> capturedImageUri.value = uri }, // Update state with the URI of the captured image on success
+                    fun (uri) {
+                        capturedImageUri.value = uri
+
+                        Log.d(Constants.TAG, "saved image ====> ${uri.toString()}")
+
+                        mainViewModel.addImage(uri.toString())
+                    },
+                    //{ uri -> capturedImageUri.value = uri }, // Update state with the URI of the captured image on success
                     { exception ->  }
                 // Error handling logic for image capture failures
                 )

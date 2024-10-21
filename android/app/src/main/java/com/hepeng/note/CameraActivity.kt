@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import com.hepeng.note.data.AppDatabase
+import com.hepeng.note.data.ImageRepository
+import com.hepeng.note.data.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class CameraActivity : ComponentActivity() {
     private val _isCameraPermissionGranted = MutableStateFlow(false)
-    val isCameraPermissionGranted: StateFlow<Boolean> = _isCameraPermissionGranted
+    private val isCameraPermissionGranted: StateFlow<Boolean> = _isCameraPermissionGranted
 
-    // Declare a laucher for the camera permission request
-    private val cameraPermissionRequestLaucher: ActivityResultLauncher<String> =
+    // Declare a launcher for the camera permission request
+    private val cameraPermissionRequestLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
             if (isGranted) {
@@ -36,7 +40,7 @@ class CameraActivity : ComponentActivity() {
             }
         }
 
-    fun handleCameraPermission() {
+    private fun handleCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
                 this,
@@ -45,7 +49,7 @@ class CameraActivity : ComponentActivity() {
                 _isCameraPermissionGranted.value = true
             }
             else -> {
-                cameraPermissionRequestLaucher.launch(Manifest.permission.CAMERA)
+                cameraPermissionRequestLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
@@ -53,12 +57,16 @@ class CameraActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val db = AppDatabase.getInstance(applicationContext)
+        val mainViewModel = MainViewModel(ImageRepository(db.userDao()), ioDispatcher = Dispatchers.IO)
+
         setContent {
             val permissionGranted = isCameraPermissionGranted.collectAsState().value
 
             Box(modifier = Modifier.fillMaxSize()) {
                 if (permissionGranted) {
-                    CameraPreview()
+                    CameraPreview(mainViewModel)
                 } else {
                     handleCameraPermission()
                 }

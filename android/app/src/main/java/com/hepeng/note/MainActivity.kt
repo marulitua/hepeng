@@ -53,6 +53,9 @@ fun MyContent() {
 
                 Button(onClick = {
                     Log.d(Constants.TAG, "list button")
+                    mContext.startActivity(
+                        Intent(mContext, ImageActivity::class.java)
+                    )
                 }) { Text("List") }
             }
         }
