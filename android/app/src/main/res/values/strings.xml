@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Hepeng</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="name_hint">Send message</string>
+    <string name="send_request">send</string>
+    <string name="server_response">server response</string>
 </resources>

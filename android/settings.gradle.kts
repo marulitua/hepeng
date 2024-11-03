@@ -16,8 +16,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://repo.gradle.org/gradle/libs-releases")
     }
 }
 
 rootProject.name = "Hepeng"
 include(":app")
+include(":stub-android")
+include(":protos")
+include(":stub-android")

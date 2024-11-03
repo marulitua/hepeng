@@ -23,6 +23,13 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        val serverUrl: String? by project
+        if (serverUrl != null) {
+            resValue("string", "server_url", serverUrl!!)
+        } else {
+            resValue("string", "server_url", "http://192.168.0.106:50051/")
+        }
     }
 
     buildTypes {
@@ -55,6 +62,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":stub-android"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -97,4 +106,17 @@ dependencies {
     testImplementation("androidx.room:room-testing:$room_version")
 
     implementation("androidx.room:room-paging:$room_version")
+
+    var grpc_version = "1.68.1"
+
+    implementation("io.grpc:grpc-okhttp:$grpc_version")
+    implementation("io.grpc:grpc-protobuf-lite:$grpc_version")
+    implementation("io.grpc:grpc-stub:$grpc_version")
+
+    implementation("io.grpc:grpc-stub:$grpc_version")
+    implementation("io.grpc:grpc-kotlin-stub:1.3.0")
+
+    implementation("com.google.protobuf:protobuf-javalite:3.8.1")
+
+    runtimeOnly(libs.grpc.okhttp)
 }

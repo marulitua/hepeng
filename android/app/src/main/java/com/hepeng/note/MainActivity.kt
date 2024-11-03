@@ -57,6 +57,13 @@ fun MyContent() {
                         Intent(mContext, ImageActivity::class.java)
                     )
                 }) { Text("List") }
+
+                Button(onClick = {
+                    Log.d(Constants.TAG, "activate GRPC")
+                    mContext.startActivity(
+                        Intent(mContext, GrpcActivity::class.java)
+                    )
+                }) { Text("Grpc") }
             }
         }
     }
