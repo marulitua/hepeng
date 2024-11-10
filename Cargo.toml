@@ -1,5 +1,5 @@
 [workspace]
 
-members = [ "server_hyper", "server_tonic" ]
+members = [ "server_hyper", "server_tonic", "frontend" ]
 
 resolver = "2"
