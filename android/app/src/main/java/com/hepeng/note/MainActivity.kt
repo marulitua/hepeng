@@ -61,7 +61,7 @@ fun MyContent() {
                 Button(onClick = {
                     Log.d(Constants.TAG, "activate GRPC")
                     mContext.startActivity(
-                        Intent(mContext, GrpcActivity::class.java)
+                        Intent(mContext, GrpcActivity::class.java, )
                     )
                 }) { Text("Grpc") }
             }

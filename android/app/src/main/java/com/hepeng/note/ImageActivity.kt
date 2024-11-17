@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import com.hepeng.note.composeable.ImageItemsContainer
 import com.hepeng.note.data.AppDatabase
@@ -25,12 +24,12 @@ class ImageActivity : ComponentActivity() {
             ) {
                 ImageItemsContainer(
                     imageItemsFlow = mainViewModel.images,
-                    onItemClick = mainViewModel::toggleUpload,
-                    onItemDelete = mainViewModel::removeImage,
+                    onItemUpload = mainViewModel::toggleUpload,
                     //overlappingElementsHeight = OverlappingHeight
                 )
             }
         }
     }
+
 
 }

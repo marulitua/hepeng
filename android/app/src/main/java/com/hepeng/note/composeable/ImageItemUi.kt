@@ -49,7 +49,7 @@ import androidx.compose.foundation.Image as ImageUi
 fun ImageItemUi(
     imageItem: Image = Image(path = "xxxxx"),
     onItemClick: (Image) -> Unit = {},
-    onItemDelete: (Image) -> Unit = {},
+    onUploadClick: (Image) -> Unit = {},
 ) {
     val backgroundColor = if (imageItem.isUpload) HepengItemBackgroundColor.copy(alpha = 0.5f) else HepengItemBackgroundColor
     val textColor = if (imageItem.isUpload) HepengItemTextColor.copy(alpha = 0.5f) else HepengItemTextColor
@@ -107,12 +107,12 @@ fun ImageItemUi(
                 textDecoration = textDecoration
             )
             IconButton(
-                onClick = { onItemClick(imageItem) },
+                onClick = { onUploadClick(imageItem) },
                 modifier = Modifier.size(HepengItemActionButtonRippleRadius)
             ) {
                 Icon(
                     modifier = Modifier.size(HepengItemIconSize),
-                    painter = painterResource(id = R.drawable.ic_delete),
+                    painter = painterResource(id = R.drawable.upload),
                     contentDescription = null,
                     tint = iconTintColor
                 )
