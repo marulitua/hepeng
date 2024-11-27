@@ -31,13 +31,18 @@ watch_path = ["src", "assets"]
 
 # CSS style file
 
-style = ["/tailwind.css"]
+style = []
 
 # Javascript code file
 script = []
 
 [web.resource.dev]
 
+style = []
+
 # Javascript code file
 # serve: [dev-server] only
 script = []
+
+[[web.proxy]]
+backend = "http://localhost:3000/api/"

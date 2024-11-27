@@ -5,3 +5,5 @@ Cargo.lock
 
 **/*.rs.bk
 **/build/
+frontend/node_modules/
+frontend/public/

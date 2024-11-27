@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+  <title>{app_title}</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  {style_include}
+</head>
+<body class="h-full">
+  <div id="main" class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8"></div>
+  <script type="module">
+    import init from "/{base_path}/assets/dioxus/{app_name}.js";
+    init("/{base_path}/assets/dioxus/{app_name}_bg.wasm").then(wasm => {
+      if (wasm.__wbindgen_start == undefined) {
+        wasm.main();
+      }
+    });
+  </script>
+  {script_include}
+</body>
+</html>
