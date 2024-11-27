@@ -12,6 +12,10 @@ dioxus = { version = "0.5", features = ["fullstack", "router"] }
 # Debug
 dioxus-logger = "0.5.1"
 manganis = "0.2.2"
+chrono = { version = "0.4.38", features = ["serde"] }
+futures = "0.3.31"
+reqwest = { version = "0.12.9", features = ["json"] }
+async-recursion = "1.1.1"
 
 [features]
 default = []

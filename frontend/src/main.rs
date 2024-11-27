@@ -4,8 +4,10 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing;
 use crate::views::form::Form;
 use crate::views::banner::Banner;
+use crate::hnews::home::Home as NewsHome;
 
 pub mod views;
+pub mod hnews;
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -17,6 +19,8 @@ enum Route {
     Form {},
     #[route("/banner")]
     Banner {},
+    #[route("/hackernews")]
+    NewsHome {},
 }
 
 fn main() {
