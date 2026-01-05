@@ -5,9 +5,12 @@ use dioxus_logger::tracing;
 use crate::views::form::Form;
 use crate::views::banner::Banner;
 use crate::hnews::home::Home as NewsHome;
+use crate::page404::PageNotFound;
+use manganis::{Asset, asset};
 
 pub mod views;
 pub mod hnews;
+pub mod page404;
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -21,6 +24,8 @@ enum Route {
     Banner {},
     #[route("/hackernews")]
     NewsHome {},
+    #[route("/:..route")]
+    PageNotFound { route: Vec<String> },
 }
 
 fn main() {
@@ -46,7 +51,7 @@ fn Blog(id: i32) -> Element {
 
 #[component]
 fn Home() -> Element {
-    const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
+    const _TAILWIND_URL: Asset = asset!("public/tailwind.css");
     let mut count = use_signal(|| 0);
     let mut text = use_signal(|| String::from("..."));
 
@@ -121,6 +126,8 @@ fn Home() -> Element {
                                     if let Ok(data) = get_server_data().await {
                                         tracing::info!("Client received: {}", data);
                                         text.set(data.clone());
+                                        println!("Client received: {}", data);
+                                        text.set(data.clone());
                                         post_server_data(data).await.unwrap();
                                     }
                                 },
@@ -156,7 +163,29 @@ async fn post_server_data(data: String) -> Result<(), ServerFnError> {
     Ok(())
 }
 
-#[server(GetServerData)]
+//#[server(
+//    name = GetServerData,
+//    prefix = "/api",
+//    endpoint = "foo"
+//)]
+//async fn get_server_data() -> Result<String, ServerFnError> {
+////    Ok("Hello from the server!".to_string())
+//
+//    let url = format!("/api/foo");
+//    tracing::info!("request to {}", &url);
+//    Ok(reqwest::get(&url).await?.text().await?)
+//}
+
+//#[server(
+//    name = GetServerData,
+//    prefix = "/api",
+//    endpoint = "foo"
+//)]
 async fn get_server_data() -> Result<String, ServerFnError> {
-    Ok("Hello from the server!".to_string())
+    //Ok(reqwest::get("https://httpbin.org/ip").await?.text().await?)
+
+    let url = format!("/api/foo");
+    tracing::info!("request to {}", &url);
+    //Ok(reqwest::get(&url).await?.text().await?)
+    Ok(reqwest::get("https://httpbin.org/ip").await?.text().await?)
 }

@@ -28,7 +28,7 @@ android {
         if (serverUrl != null) {
             resValue("string", "server_url", serverUrl!!)
         } else {
-            resValue("string", "server_url", "http://192.168.0.106:50051/")
+            resValue("string", "server_url", "http://10.80.1.245:50051/")
         }
     }
 

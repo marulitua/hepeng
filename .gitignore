@@ -7,3 +7,5 @@ Cargo.lock
 **/build/
 frontend/node_modules/
 frontend/public/
+android/gradlew-nix
+android-studio-nix

@@ -24,4 +24,3 @@ rootProject.name = "Hepeng"
 include(":app")
 include(":stub-android")
 include(":protos")
-include(":stub-android")

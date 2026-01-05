@@ -8,7 +8,8 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(handler))
-        .route("/json", get(json));
+        .route("/json", get(json))
+        .route("/api/foo", get(handler));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
